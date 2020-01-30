@@ -79,6 +79,20 @@ void NetQueryDelayer::delay(NetQueryPtr query) {
     return;
   }
 
+  // dirty hack {} by Hypnosis-i2p
+  /*{
+    auto msg = error.message();
+    auto prefix = Slice("MSG_");
+    if (code == 420 && !begins_with(msg, prefix)) {
+      LOG(WARNING) << "Hypnosis-i2p dirty fix: Setting status 420: " << query << " " << tag("timeout", timeout) << tag("total_timeout", query->total_timeout)
+                   << " because of " << error << " from " << query->source_;
+      query->debug("NetQueryDelayer: Hypnosis-i2p dirty fix send");
+      query->set_error(Status::Error(420, PSLICE() << "MSG_" << msg));
+      G()->net_query_dispatcher().dispatch(std::move(query));
+      return;
+    }
+  }*/
+
   LOG(WARNING) << "Delay: " << query << " " << tag("timeout", timeout) << tag("total_timeout", query->total_timeout)
                << " because of " << error << " from " << query->source_;
   query->debug(PSTRING() << "delay for " << format::as_time(timeout));
